@@ -3,7 +3,17 @@ const sinks = document.getElementById("sinks");
 const status = document.getElementById("status");
 const refreshBtn = document.getElementById("refresh");
 
-const looksLikeA50 = (label) => /a50/i.test(label || "");
+const ASTRO_HINT = /astro|a50|mixamp/i;
+const GAME_HINT = /game|stereo|auricular|headphone|earphone/i;
+const VOICE_HINT = /voice|hands-?free|communications|chat/i;
+
+function scoreAstroLabel(label) {
+  const text = label || "";
+  if (!ASTRO_HINT.test(text)) return 0;
+  if (VOICE_HINT.test(text) && !GAME_HINT.test(text)) return 1;
+  if (GAME_HINT.test(text)) return 3;
+  return 2;
+}
 
 function setStatus(text, kind) {
   status.textContent = text;
@@ -32,7 +42,7 @@ async function listSinks() {
     sinks.append(option);
     sinks.disabled = true;
     setStatus(
-      "No se pueden listar dispositivos aquí. Reproducí la canción en el A50 abriendo esta página en el teléfono.",
+      "No se pueden listar dispositivos aquí. En la PC los ASTRO A50 tienen que aparecer por la base USB como “ASTRO A50 Game”.",
       "warn"
     );
     return;
@@ -47,36 +57,43 @@ async function listSinks() {
   defaultOption.textContent = "Salida predeterminada del sistema";
   sinks.append(defaultOption);
 
-  let foundA50 = false;
+  let bestAstro = null;
+  let bestScore = 0;
   for (const device of outputs) {
     const option = document.createElement("option");
     option.value = device.deviceId;
-    option.textContent = device.label || `Salida ${device.deviceId.slice(0, 8)}`;
-    if (looksLikeA50(device.label)) {
-      foundA50 = true;
-      option.textContent += " (A50)";
+    const label = device.label || `Salida ${device.deviceId.slice(0, 8)}`;
+    const score = scoreAstroLabel(label);
+    option.textContent = score ? `${label} (ASTRO A50)` : label;
+    if (score > bestScore) {
+      bestScore = score;
+      bestAstro = option;
     }
     sinks.append(option);
   }
 
   sinks.disabled = !canSelectSink();
 
-  if (foundA50) {
-    const a50 = [...sinks.options].find((opt) => looksLikeA50(opt.textContent));
-    if (a50) {
-      sinks.value = a50.value;
-      await applySink();
+  if (bestAstro) {
+    sinks.value = bestAstro.value;
+    await applySink();
+    if (bestScore === 1) {
+      setStatus(
+        "Encontré los A50, pero como Voice/Hands-Free. Cambiá en Windows a “ASTRO A50 Game” para escuchar la canción.",
+        "warn"
+      );
+    } else {
+      setStatus(
+        "Encontré los ASTRO A50 como salida de audio. Ya los seleccioné: dale play.",
+        "ok"
+      );
     }
-    setStatus(
-      "El A50 aparece como salida de audio. Ya lo seleccioné: dale play.",
-      "ok"
-    );
     return;
   }
 
   if (!outputs.length) {
     setStatus(
-      "No hay salidas extra. El A50 está en Bluetooth, pero no figura como parlante.",
+      "No hay salidas extra. Los A50 están en Bluetooth, pero la PC no los ve como parlante USB.",
       "warn"
     );
     return;
@@ -85,14 +102,14 @@ async function listSinks() {
   const named = outputs.some((device) => device.label);
   if (!named) {
     setStatus(
-      "Hay salidas, pero el navegador oculta los nombres hasta que des permiso de micrófono. El A50 igual suele no listarse: es teléfono, no auricular.",
+      "Hay salidas, pero el navegador oculta los nombres. Dale a Actualizar lista y aceptá el micrófono. Igual: los A50 tienen que figurar como “ASTRO A50 Game” por la base USB.",
       "warn"
     );
     return;
   }
 
   setStatus(
-    "El A50 no está en esta lista. Puede estar conectado en Bluetooth y aun así no servir para escuchar desde acá.",
+    "Los ASTRO A50 no están en esta lista. Si solo los ves en Bluetooth, desconectá eso y usá la estación base por USB.",
     "warn"
   );
 }
@@ -100,7 +117,7 @@ async function listSinks() {
 async function applySink() {
   if (!canSelectSink()) {
     setStatus(
-      "Este navegador no deja cambiar la salida. Elegí el A50 en Configuración → Sonido de Windows, o abrí la página en el teléfono.",
+      "Este navegador no deja cambiar la salida. En Windows elegí “ASTRO A50 Game” en Configuración → Sonido.",
       "warn"
     );
     return;
@@ -109,12 +126,18 @@ async function applySink() {
   const id = sinks.value;
   try {
     await player.setSinkId(id);
-    if (looksLikeA50(sinks.selectedOptions[0]?.textContent)) {
-      setStatus("Sonido enviado al A50. Dale play para escuchar.", "ok");
+    const selected = sinks.selectedOptions[0]?.textContent || "";
+    if (scoreAstroLabel(selected) === 1) {
+      setStatus(
+        "Esa salida es Voice/Hands-Free. Pasate a “ASTRO A50 Game” o no se va a oír bien la canción.",
+        "warn"
+      );
+    } else if (scoreAstroLabel(selected) > 1) {
+      setStatus("Sonido enviado a los ASTRO A50. Dale play para escuchar.", "ok");
     }
   } catch (error) {
     setStatus(
-      `No pude usar esa salida (${error.message}). Si es el A50, el sistema no lo expone como parlante.`,
+      `No pude usar esa salida (${error.message}). Si son los A50, Windows tiene que listar “ASTRO A50 Game” por USB.`,
       "warn"
     );
   }

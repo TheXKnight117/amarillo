@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Flores Amarillas — salida A50</title>
+    <title>Flores Amarillas — ASTRO A50</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="card">
       <p class="kicker">Amarillo</p>
       <h1>Flores Amarillas</h1>
-      <p class="subtitle">Floricienta</p>
+      <p class="subtitle">Floricienta · audífonos ASTRO A50</p>
 
       <audio id="player" controls preload="metadata">
         <source
@@ -34,35 +34,44 @@
         </label>
 
         <p id="status" class="status" role="status">
-          El A50 puede figurar en Bluetooth y aun así no salir aquí.
+          Si los A50 están en Bluetooth pero no salen acá, es normal: la PC los
+          usa por USB, no por Bluetooth.
         </p>
       </section>
 
       <section class="help" id="a50-help">
-        <h2>Por qué el A50 no sale aquí</h2>
+        <h2>Por qué los ASTRO A50 no salen aquí</h2>
         <p>
-          Windows (y Chrome) solo listan dispositivos con perfil
-          <strong>A2DP</strong> — auriculares o parlantes. El Galaxy A50 se
-          conecta como teléfono: aparece en “Dispositivos Bluetooth”, pero
-          <strong>no es una salida de música</strong>, así que no podés
-          usarlo para escuchar desde la PC.
+          Estos audífonos <strong>no reproducen la PC por Bluetooth</strong>.
+          Bluetooth en los A50 es un extra de la <strong>estación base</strong>
+          para el celular. Por eso aparecen en “Dispositivos Bluetooth” y
+          <strong>no figuran como parlante</strong> para escuchar.
         </p>
         <ol>
           <li>
-            Abrí esta misma página <strong>en el A50</strong> (mismo Wi‑Fi o
-            este archivo) y dale play ahí.
+            Conectá la <strong>estación base por USB</strong> a la PC (puerto
+            USB 3.0 si podés) y poné el switch en <strong>PC</strong>.
           </li>
           <li>
-            Si querés que la PC suene en el A50, instalá en el teléfono una app
-            de <em>Bluetooth Audio Receiver</em> y volvé a emparejar.
+            Encendé los audífonos y dejálos emparejados con la base (tienen que
+            estar cerca; si no hay vínculo con la base, no hay sonido, ni
+            siquiera Bluetooth).
           </li>
           <li>
-            Si el A50 son auriculares: en Windows andá a
-            Configuración → Sistema → Sonido y elegilos como
-            <em>dispositivo de salida</em>. Si no aparecen, desvinculá,
-            ponelos en modo emparejar y volvé a conectar.
+            En Windows: Configuración → Sistema → Sonido → salida
+            <strong>ASTRO A50 Game</strong> (o “Headset Earphone”). No elijas
+            <em>Voice</em> ni <em>Hands-Free</em>: esos son para el mic/chat y
+            no sirven bien para la canción.
+          </li>
+          <li>
+            Volvé a esta página, dale a <em>Actualizar lista</em> y elegí
+            <strong>ASTRO A50 Game</strong>. Recién ahí dale play.
           </li>
         </ol>
+        <p>
+          Si seguís sin verlos: desvinculalos del Bluetooth de Windows. Ese
+          emparejamiento no es el canal de música de la PC.
+        </p>
       </section>
     </main>
     <script src="app.js"></script>
