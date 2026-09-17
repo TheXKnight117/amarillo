@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flores Amarillas — salida A50</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="card">
+      <p class="kicker">Amarillo</p>
+      <h1>Flores Amarillas</h1>
+      <p class="subtitle">Floricienta</p>
+
+      <audio id="player" controls preload="metadata">
+        <source
+          src="Floricienta%20%20Flores%20Amarillas%20%5BLetra%5D.mp3"
+          type="audio/mpeg"
+        />
+        Tu navegador no puede reproducir este MP3.
+      </audio>
+
+      <section class="panel" aria-labelledby="salidas-title">
+        <div class="panel-head">
+          <h2 id="salidas-title">Dónde escuchar</h2>
+          <button type="button" id="refresh" class="ghost">Actualizar lista</button>
+        </div>
+
+        <label class="field">
+          <span>Salida de audio</span>
+          <select id="sinks" disabled>
+            <option value="">Buscando dispositivos…</option>
+          </select>
+        </label>
+
+        <p id="status" class="status" role="status">
+          El A50 puede figurar en Bluetooth y aun así no salir aquí.
+        </p>
+      </section>
+
+      <section class="help" id="a50-help">
+        <h2>Por qué el A50 no sale aquí</h2>
+        <p>
+          Windows (y Chrome) solo listan dispositivos con perfil
+          <strong>A2DP</strong> — auriculares o parlantes. El Galaxy A50 se
+          conecta como teléfono: aparece en “Dispositivos Bluetooth”, pero
+          <strong>no es una salida de música</strong>, así que no podés
+          usarlo para escuchar desde la PC.
+        </p>
+        <ol>
+          <li>
+            Abrí esta misma página <strong>en el A50</strong> (mismo Wi‑Fi o
+            este archivo) y dale play ahí.
+          </li>
+          <li>
+            Si querés que la PC suene en el A50, instalá en el teléfono una app
+            de <em>Bluetooth Audio Receiver</em> y volvé a emparejar.
+          </li>
+          <li>
+            Si el A50 son auriculares: en Windows andá a
+            Configuración → Sistema → Sonido y elegilos como
+            <em>dispositivo de salida</em>. Si no aparecen, desvinculá,
+            ponelos en modo emparejar y volvé a conectar.
+          </li>
+        </ol>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
