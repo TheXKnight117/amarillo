@@ -17,6 +17,7 @@ from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Space
 OUTPUT_DIR = Path(__file__).parent
 DOCX_PATH = OUTPUT_DIR / "Semana1_Apellido.docx"
 PDF_PATH = OUTPUT_DIR / "Semana1_Apellido.pdf"
+RTF_PATH = OUTPUT_DIR / "Semana1_Apellido.rtf"
 
 TITLE = "Actividad formativa: El poder de la comunicación"
 SUBTITLE = "Semana 1 – Análisis y reflexión"
@@ -259,8 +260,42 @@ def build_pdf():
     )
 
 
+def rtf_escape(text):
+    escaped = []
+    for character in text:
+        if character in "\\{}":
+            escaped.append("\\" + character)
+        elif ord(character) > 127:
+            value = ord(character)
+            if value > 32767:
+                value -= 65536
+            escaped.append(f"\\u{value}?")
+        else:
+            escaped.append(character)
+    return "".join(escaped)
+
+
+def build_rtf():
+    lines = [
+        r"{\rtf1\ansi\ansicpg1252\deff0",
+        r"{\fonttbl{\f0 Arial;}}",
+        r"\paperw11907\paperh16840\margl1417\margr1417\margt1417\margb1417",
+        r"\f0\fs24\sl240\slmult1",
+        r"\qc\b " + rtf_escape(TITLE) + r"\b0\par",
+        r"\qc\b " + rtf_escape(SUBTITLE) + r"\b0\par\par",
+        r"\qj " + rtf_escape(STUDENT) + r"\par\par",
+    ]
+    for question, answer in QUESTIONS_AND_ANSWERS:
+        lines.append(r"\qj\b " + rtf_escape(question) + r"\b0\par")
+        lines.append(r"\qj " + rtf_escape(answer) + r"\par\par")
+    lines.append("}")
+    RTF_PATH.write_text("\n".join(lines), encoding="ascii")
+
+
 if __name__ == "__main__":
     build_docx()
     build_pdf()
+    build_rtf()
     print(DOCX_PATH)
     print(PDF_PATH)
+    print(RTF_PATH)
