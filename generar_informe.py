@@ -111,6 +111,15 @@ styles.add(
 )
 styles.add(
     ParagraphStyle(
+        name="BodyWhite",
+        fontName=FONT,
+        fontSize=9,
+        leading=12.5,
+        textColor=WHITE,
+    )
+)
+styles.add(
+    ParagraphStyle(
         name="BodySmall",
         fontName=FONT,
         fontSize=7.7,
@@ -186,6 +195,7 @@ class AccentRule(Flowable):
         super().__init__()
         self.width = width
         self.height = 0.12 * cm
+        self.hAlign = "CENTER"
 
     def draw(self):
         self.canv.setFillColor(GOLD)
@@ -442,10 +452,10 @@ def build_story():
     )
     info = Table(
         [
-            [Paragraph("<b>Asignatura / código</b>", styles["Body"]), Paragraph("IGRV0132", styles["Body"])],
-            [Paragraph("<b>Modalidad</b>", styles["Body"]), Paragraph("Trabajo individual", styles["Body"])],
-            [Paragraph("<b>Estudiante</b>", styles["Body"]), Paragraph("[Escribe aquí tu nombre]", styles["Body"])],
-            [Paragraph("<b>Fecha</b>", styles["Body"]), Paragraph("Octubre de 2026", styles["Body"])],
+            [Paragraph("<b>Asignatura / código</b>", styles["BodyWhite"]), Paragraph("IGRV0132", styles["Body"])],
+            [Paragraph("<b>Modalidad</b>", styles["BodyWhite"]), Paragraph("Trabajo individual", styles["Body"])],
+            [Paragraph("<b>Estudiante</b>", styles["BodyWhite"]), Paragraph("[Escribe aquí tu nombre]", styles["Body"])],
+            [Paragraph("<b>Fecha</b>", styles["BodyWhite"]), Paragraph("Octubre de 2026", styles["Body"])],
         ],
         colWidths=[4.6 * cm, 10.0 * cm],
         hAlign="CENTER",
