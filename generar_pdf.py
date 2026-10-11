@@ -5,6 +5,10 @@ from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
+from docx.shared import Cm, Pt
 
 
 pdfmetrics.registerFont(
@@ -15,6 +19,7 @@ pdfmetrics.registerFont(
 )
 
 OUTPUT = "Semana1_Apellidos_del_grupo.pdf"
+WORD_OUTPUT = "Semana1_Apellidos_del_grupo.docx"
 
 doc = SimpleDocTemplate(
     OUTPUT,
@@ -135,3 +140,81 @@ story.append(
 
 doc.build(story)
 print(OUTPUT)
+
+word_doc = Document()
+word_section = word_doc.sections[0]
+word_section.top_margin = Cm(2.5)
+word_section.bottom_margin = Cm(2.5)
+word_section.left_margin = Cm(2.5)
+word_section.right_margin = Cm(2.5)
+
+word_normal = word_doc.styles["Normal"]
+word_normal.font.name = "Arial"
+word_normal._element.rPr.rFonts.set(qn("w:eastAsia"), "Arial")
+word_normal.font.size = Pt(12)
+word_normal.paragraph_format.line_spacing = 1
+word_normal.paragraph_format.space_after = Pt(6)
+
+
+def add_centered(text="", bold=False, size=12):
+    paragraph = word_doc.add_paragraph()
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = paragraph.add_run(text)
+    run.bold = bold
+    run.font.name = "Arial"
+    run._element.rPr.rFonts.set(qn("w:eastAsia"), "Arial")
+    run.font.size = Pt(size)
+    return paragraph
+
+
+def add_heading(text):
+    paragraph = word_doc.add_paragraph()
+    paragraph.paragraph_format.space_before = Pt(6)
+    paragraph.paragraph_format.space_after = Pt(6)
+    run = paragraph.add_run(text)
+    run.bold = True
+    run.font.name = "Arial"
+    run._element.rPr.rFonts.set(qn("w:eastAsia"), "Arial")
+    run.font.size = Pt(12)
+
+
+def add_body(text):
+    paragraph = word_doc.add_paragraph(text)
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    paragraph.paragraph_format.line_spacing = 1
+    paragraph.paragraph_format.space_after = Pt(6)
+
+
+for _ in range(5):
+    word_doc.add_paragraph()
+add_centered("ANÁLISIS DE LIDERAZGO EN PERSONAJES HISTÓRICOS", True, 16)
+word_doc.add_paragraph()
+add_centered("Asignatura: Comunicación profesional efectiva")
+add_centered("Semana: 2")
+add_centered("Integrantes: ________________________________")
+add_centered("________________________________")
+add_centered("Docente: ________________________________")
+add_centered("Fecha: ________________________________")
+word_doc.add_page_break()
+
+add_centered("Análisis de liderazgo en personajes históricos", True, 16)
+for heading, paragraphs in sections:
+    add_heading(heading)
+    for text in paragraphs:
+        add_body(text)
+
+add_heading("Conclusión")
+add_body(
+    """Los tres personajes muestran que no hay una sola manera de liderar. Florence Nightingale produjo cambios mediante nuevas ideas y una visión de futuro; Nelson Mandela usó el diálogo para unir a una sociedad dividida; y Ernest Shackleton fue modificando sus decisiones frente a una emergencia. Aunque actuaron en áreas y contextos diferentes, los tres fueron capaces de orientar a otras personas hacia un objetivo común. Esto confirma lo señalado en el apunte: la efectividad del liderazgo depende tanto de las características del líder como de las necesidades del equipo y de la situación."""
+)
+add_heading("Referencias")
+add_body("Bass, B. M. (1985). Leadership and performance beyond expectations. Free Press.")
+add_body(
+    "Hersey, P. y Blanchard, K. H. (1982). Management of Organizational Behavior: Utilizing Human Resources. Prentice-Hall."
+)
+add_body(
+    "Institución educativa. (2026). Comunicación profesional efectiva: Apunte semana 2."
+)
+
+word_doc.save(WORD_OUTPUT)
+print(WORD_OUTPUT)
