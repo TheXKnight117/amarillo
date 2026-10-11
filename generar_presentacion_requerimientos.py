@@ -193,11 +193,7 @@ def add_header(slide, number, title, kicker):
     add_rect(slide, 0, 0, 13.333, 0.16, BLUE)
     add_text(slide, 0.65, 0.35, 10.9, 0.25, kicker.upper(), size=9, color=BLUE, bold=True)
     add_text(slide, 0.65, 0.67, 11.8, 0.55, title, size=25, color=NAVY, bold=True)
-    add_text(slide, 12.25, 0.48, 0.48, 0.48, f"{number:02}", size=13, color=WHITE, bold=True, align=PP_ALIGN.CENTER)
-    circle = slide.shapes[-1]
     circle_shape = add_rect(slide, 12.2, 0.42, 0.55, 0.55, NAVY, True)
-    slide.shapes._spTree.remove(circle._element)
-    slide.shapes._spTree.insert(len(slide.shapes._spTree) - 1, circle._element)
     set_text(circle_shape, f"{number:02}", size=12, color=WHITE, bold=True, align=PP_ALIGN.CENTER)
 
 
