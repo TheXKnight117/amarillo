@@ -4,7 +4,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer
+from reportlab.platypus import KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer
 
 
 pdfmetrics.registerFont(
@@ -108,7 +108,8 @@ for heading, paragraphs in sections:
     for text in paragraphs:
         story.append(Paragraph(text, normal))
 
-story.extend(
+story.append(
+    KeepTogether(
     [
         Paragraph("Conclusión", subtitle),
         Paragraph(
@@ -129,6 +130,7 @@ story.extend(
             normal,
         ),
     ]
+    )
 )
 
 doc.build(story)
