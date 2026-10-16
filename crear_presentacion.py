@@ -338,40 +338,47 @@ add_text(slide, "Responsable: gestor de proyecto · Participan: equipo técnico 
 
 # 5. Roles
 slide = new_slide(5, "Gestión", "Roles y responsabilidades",
-                  "La responsabilidad es explícita, pero el trabajo se coordina alrededor de los casos de uso.")
+                  "Responsabilidades alineadas con la Tabla de Roles del material de la asignatura.")
 roles = [
-    ("Gestor/a", "Planifica iteraciones, recursos, riesgos y comunicación.", ROSE),
-    ("Analista", "Levanta requisitos y mantiene el modelo de casos de uso.", BROWN),
-    ("Arquitecto/a", "Define arquitectura, interfaces y decisiones técnicas.", GREEN),
-    ("Diseñador/a", "Transforma casos de uso en modelos UML y componentes.", GOLD),
-    ("Desarrollador/a", "Implementa, integra, revisa y documenta el código.", ROSE),
-    ("Tester", "Diseña pruebas, verifica criterios y registra desviaciones.", GREEN),
-    ("Config. y cambios", "Versiona artefactos, líneas base y solicitudes.", BROWN),
-    ("Cliente", "Prioriza valor, aclara reglas y acepta cada incremento.", GOLD),
+    ("Administrador/a de proyecto",
+     "Planifica, coordina y supervisa plazos, recursos e hitos.", ROSE),
+    ("Analista",
+     "Captura y documenta los requisitos de clientes y administradores.", BROWN),
+    ("Diseñador/a",
+     "Crea la arquitectura y los diagramas UML del sistema.", GREEN),
+    ("Programador/a",
+     "Implementa el código de acceso, compras, stock y boletas.", GOLD),
+    ("Tester",
+     "Verifica que el software cumpla los requisitos y criterios.", ROSE),
 ]
 for i, (title, body, color) in enumerate(roles):
-    col = i % 2
-    row = i // 2
-    x = 0.70 + col * 6.05
-    y = 2.05 + row * 1.15
-    add_card(slide, title, body, x, y, 5.72, 0.93, color, WHITE, 14, 12)
-add_box(slide, 0.70, 6.67, 11.77, 0.28, PALE_ROSE, PALE_ROSE)
-add_text(slide, "Regla: nadie modifica una línea base sin registrar, analizar y aprobar el cambio.",
-         0.92, 6.69, 11.30, 0.20, 10, ROSE, True, align=PP_ALIGN.CENTER)
+    if i < 4:
+        col = i % 2
+        row = i // 2
+        x = 0.70 + col * 6.05
+        y = 2.05 + row * 1.43
+        add_card(slide, title, body, x, y, 5.72, 1.18, color, WHITE, 14, 12)
+    else:
+        add_card(slide, title, body, 3.73, 4.91, 5.72, 1.18,
+                 color, WHITE, 14, 12)
+add_box(slide, 0.70, 6.42, 11.77, 0.43, PALE_ROSE, PALE_ROSE)
+add_text(slide, "Los casos de uso coordinan el trabajo: cada rol actualiza sus artefactos "
+                "cuando cambia un requisito.",
+         0.92, 6.50, 11.30, 0.24, 10, ROSE, True, align=PP_ALIGN.CENTER)
 
 
 # 6. Fases
 slide = new_slide(6, "Ciclo de vida", "Fases del Proceso Unificado",
                   "Cada iteración recorre las etapas para los casos de uso seleccionados y produce un incremento.")
 phases = [
-    ("Inicio", "Acordar visión, alcance, actores, casos de uso prioritarios y riesgos iniciales.",
-     "Hito: objetivos aceptados", ROSE, PALE_ROSE),
-    ("Elaboración", "Refinar requisitos y validar una arquitectura ejecutable mediante modelos UML.",
-     "Hito: arquitectura estable", GREEN, PALE_GREEN),
-    ("Construcción", "Implementar e integrar los casos de uso, con pruebas continuas y documentación.",
-     "Hito: incremento operable", GOLD, PALE_GOLD),
-    ("Transición", "Probar con usuarios, desplegar, capacitar y recoger desviaciones para la siguiente iteración.",
-     "Hito: incremento aceptado", BROWN, RGBColor(238, 231, 226)),
+    ("Inicio", "Levantar requisitos, definir alcance, realizar la planificación inicial y estimar costos.",
+     "Artefactos: casos de uso y visión", ROSE, PALE_ROSE),
+    ("Elaboración", "Analizar y diseñar, validar la arquitectura, planificar iteraciones y gestionar riesgos.",
+     "Artefactos: UML y prototipos", GREEN, PALE_GREEN),
+    ("Construcción", "Implementar, integrar y ejecutar pruebas unitarias e iterativas con revisiones de avance.",
+     "Artefactos: código y manual técnico", GOLD, PALE_GOLD),
+    ("Transición", "Realizar pruebas finales, desplegar, capacitar usuarios y estabilizar el sistema.",
+     "Artefactos: plan y manual de usuario", BROWN, RGBColor(238, 231, 226)),
 ]
 for i, (title, body, milestone, color, fill) in enumerate(phases):
     x = 0.62 + i * 3.14
@@ -650,6 +657,8 @@ refs = [
     "Pressman, R. S. (2010). Ingeniería del software: Un enfoque práctico (7.ª ed.). McGraw-Hill.",
     "Sommerville, I. (2011). Ingeniería de software (9.ª ed.). Pearson Educación.",
     "Santo Tomás Online. (s. f.). Diseño de software: Apunte semanal, semana 3 [Material de asignatura].",
+    "Santo Tomás Online. (s. f.). Tabla de fases del Proceso Unificado de Desarrollo de Software [Material de asignatura].",
+    "Santo Tomás Online. (s. f.). Tabla de roles y responsabilidades en el Proceso Unificado [Material de asignatura].",
 ]
 add_box(slide, 0.72, 2.08, 11.90, 4.58, WHITE)
 box = slide.shapes.add_textbox(Inches(1.02), Inches(2.38), Inches(11.27), Inches(3.93))
@@ -660,13 +669,13 @@ tf.margin_right = Inches(0.02)
 for i, ref in enumerate(refs):
     p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
     p.text = ref
-    p.space_after = Pt(10)
+    p.space_after = Pt(7)
     p.level = 0
     p.margin_left = Inches(0.30)
     p.first_line_indent = Inches(-0.30)
     for r in p.runs:
         r.font.name = "Aptos"
-        r.font.size = Pt(13)
+        r.font.size = Pt(12)
         r.font.color.rgb = INK
 add_text(slide, "Revisar datos de edición y URL institucional antes de la entrega final.",
          1.02, 6.46, 11.20, 0.20, 10, MUTED)
