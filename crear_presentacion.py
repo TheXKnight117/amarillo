@@ -220,10 +220,9 @@ add_text(slide, "Proceso Unificado\naplicado a Dolce‑Vita", 0.72, 1.35, 7.0, 1
 add_text(slide, "Propuesta metodológica para un sistema de ventas en línea",
          0.75, 3.20, 6.2, 0.65, 18, BROWN)
 add_box(slide, 0.75, 4.30, 5.75, 1.18, PALE_GREEN, PALE_GREEN)
-add_text(slide, "Integrantes: [Nombre 1] · [Nombre 2] · [Nombre 3]\n"
-                "Asignatura: Diseño de Software  |  Docente: [Nombre]\n"
-                "Sección: [Sección]  |  Fecha: [Fecha]",
-         1.00, 4.57, 5.30, 0.78, 13, INK)
+add_text(slide, "Integrante: Cristopher Alexander Bañares Suarez\n"
+                "Asignatura: Diseño de Software",
+         1.00, 4.65, 5.30, 0.52, 13, INK)
 
 # Ilustración geométrica de carro y productos
 add_box(slide, 8.20, 1.10, 3.95, 4.95, WHITE, LINE)
@@ -337,70 +336,56 @@ add_text(slide, "Responsable: gestor de proyecto · Participan: equipo técnico 
 
 
 # 5. Roles
-slide = new_slide(5, "Gestión", "Roles y responsabilidades",
-                  "Responsabilidades alineadas con la Tabla de Roles del material de la asignatura.")
-roles = [
-    ("Administrador/a de proyecto",
-     "Planifica, coordina y supervisa plazos, recursos e hitos.", ROSE),
-    ("Analista",
-     "Captura y documenta los requisitos de clientes y administradores.", BROWN),
-    ("Diseñador/a",
-     "Crea la arquitectura y los diagramas UML del sistema.", GREEN),
-    ("Programador/a",
-     "Implementa el código de acceso, compras, stock y boletas.", GOLD),
-    ("Tester",
-     "Verifica que el software cumpla los requisitos y criterios.", ROSE),
+slide = new_slide(5, "Gestión", "Tabla de roles aplicada a Dolce‑Vita",
+                  "La asignación explícita de responsabilidades evita vacíos y duplicidad de trabajo.")
+role_data = [
+    ["Rol", "Responsabilidad principal", "Aplicación en Dolce‑Vita"],
+    ["Analista", "Captura y documenta requerimientos.",
+     "Define reglas de registro, compra, stock, alertas y boleta."],
+    ["Diseñador/a", "Crea la arquitectura y los diagramas UML.",
+     "Modela usuarios, productos, carro, inventario y ventas."],
+    ["Programador/a", "Implementa el código del sistema.",
+     "Programa los módulos de acceso, compra, stock y boleta."],
+    ["Tester", "Verifica que el software cumpla los requisitos.",
+     "Prueba flujos de compra, inventario, alertas y emisión de boleta."],
+    ["Administrador/a de proyecto", "Planifica, coordina y supervisa el proyecto.",
+     "Organiza iteraciones, recursos, plazos, riesgos e hitos."],
 ]
-for i, (title, body, color) in enumerate(roles):
-    if i < 4:
-        col = i % 2
-        row = i // 2
-        x = 0.70 + col * 6.05
-        y = 2.05 + row * 1.43
-        add_card(slide, title, body, x, y, 5.72, 1.18, color, WHITE, 14, 12)
-    else:
-        add_card(slide, title, body, 3.73, 4.91, 5.72, 1.18,
-                 color, WHITE, 14, 12)
-add_box(slide, 0.70, 6.42, 11.77, 0.43, PALE_ROSE, PALE_ROSE)
+add_table(slide, role_data, 0.62, 2.00, 12.08, 4.44,
+          [2.32, 4.15, 5.61], 10.9, BROWN)
+add_box(slide, 0.62, 6.57, 12.08, 0.34, PALE_ROSE, PALE_ROSE)
 add_text(slide, "Los casos de uso coordinan el trabajo: cada rol actualiza sus artefactos "
                 "cuando cambia un requisito.",
-         0.92, 6.50, 11.30, 0.24, 10, ROSE, True, align=PP_ALIGN.CENTER)
+         0.86, 6.63, 11.60, 0.20, 9, ROSE, True, align=PP_ALIGN.CENTER)
 
 
 # 6. Fases
-slide = new_slide(6, "Ciclo de vida", "Fases del Proceso Unificado",
-                  "Cada iteración recorre las etapas para los casos de uso seleccionados y produce un incremento.")
-phases = [
-    ("Inicio", "Levantar requisitos, definir alcance, realizar la planificación inicial y estimar costos.",
-     "Artefactos: casos de uso y visión", ROSE, PALE_ROSE),
-    ("Elaboración", "Analizar y diseñar, validar la arquitectura, planificar iteraciones y gestionar riesgos.",
-     "Artefactos: UML y prototipos", GREEN, PALE_GREEN),
-    ("Construcción", "Implementar, integrar y ejecutar pruebas unitarias e iterativas con revisiones de avance.",
-     "Artefactos: código y manual técnico", GOLD, PALE_GOLD),
-    ("Transición", "Realizar pruebas finales, desplegar, capacitar usuarios y estabilizar el sistema.",
-     "Artefactos: plan y manual de usuario", BROWN, RGBColor(238, 231, 226)),
+slide = new_slide(6, "Ciclo de vida", "Tabla de fases del Proceso Unificado",
+                  "Cada iteración aplica las etapas a los casos de uso seleccionados y produce un incremento.")
+phase_data = [
+    ["Fase", "Actividades principales", "Artefactos comunes", "Aplicación en Dolce‑Vita"],
+    ["Inicio",
+     "Requisitos, alcance, planificación inicial y estimación de costos.",
+     "Casos de uso y documento de visión.",
+     "Priorizar acceso, compra, inventario, alertas y boleta."],
+    ["Elaboración",
+     "Análisis y diseño, validación arquitectónica, iteraciones y riesgos.",
+     "Diagramas UML y prototipos.",
+     "Validar arquitectura de ventas, stock y usuarios."],
+    ["Construcción",
+     "Implementación, integración, pruebas unitarias e iterativas y revisiones.",
+     "Código fuente y manuales técnicos.",
+     "Construir e integrar módulos por incremento."],
+    ["Transición",
+     "Pruebas finales, despliegue, capacitación y estabilización.",
+     "Plan de despliegue y manuales de usuario.",
+     "Piloto, correcciones, capacitación y puesta en marcha."],
 ]
-for i, (title, body, milestone, color, fill) in enumerate(phases):
-    x = 0.62 + i * 3.14
-    add_box(slide, x, 2.12, 2.86, 3.80, fill, fill)
-    add_text(slide, f"0{i + 1}", x + 0.20, 2.35, 0.50, 0.32, 12, color, True)
-    add_text(slide, title, x + 0.20, 2.80, 2.35, 0.38, 18, INK, True)
-    add_text(slide, body, x + 0.20, 3.42, 2.42, 1.35, 13, INK)
-    line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x + 0.20), Inches(5.03),
-                                  Inches(2.38), Inches(0.02))
-    line.fill.solid()
-    line.fill.fore_color.rgb = color
-    line.line.fill.background()
-    add_text(slide, milestone, x + 0.20, 5.25, 2.42, 0.35, 11, color, True)
-for i in range(3):
-    arrow = slide.shapes.add_shape(MSO_SHAPE.CHEVRON, Inches(3.42 + i * 3.14),
-                                   Inches(3.65), Inches(0.34), Inches(0.58))
-    arrow.fill.solid()
-    arrow.fill.fore_color.rgb = WHITE
-    arrow.line.fill.background()
+add_table(slide, phase_data, 0.43, 1.98, 12.47, 4.48,
+          [1.42, 4.10, 2.84, 4.11], 9.8, GREEN)
 add_text(slide, "Si en transición hay desviaciones, se actualizan casos de uso y arquitectura "
                 "y se inicia una nueva iteración; si se acepta, se priorizan nuevos casos de uso.",
-         0.85, 6.25, 11.65, 0.52, 13, ROSE, True, align=PP_ALIGN.CENTER)
+         0.82, 6.58, 11.70, 0.30, 10, ROSE, True, align=PP_ALIGN.CENTER)
 
 
 # 7. Casos de uso
