@@ -1,6 +1,11 @@
 from pathlib import Path
 from textwrap import wrap
 
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Cm, Pt, RGBColor
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
 from reportlab.lib.pagesizes import A4, landscape
@@ -29,6 +34,7 @@ OUT.mkdir(exist_ok=True)
 REPORT_PATH = OUT / "Informe_conflicto_laboral_fabrica_dulces.pdf"
 INFOGRAPHIC_PATH = OUT / "Infografia_plan_dulce_acuerdo.pdf"
 COMBINED_PATH = OUT / "Entrega_completa_informe_e_infografia.pdf"
+WORD_PATH = OUT / "Informe_conflicto_laboral_editable.docx"
 
 FONT_DIR = Path("/usr/share/fonts/truetype/croscore")
 pdfmetrics.registerFont(TTFont("Arial", FONT_DIR / "Arimo-Regular.ttf"))
@@ -589,10 +595,250 @@ def combine_pdfs():
         writer.write(file)
 
 
+def set_cell_shading(cell, fill):
+    shading = OxmlElement("w:shd")
+    shading.set(qn("w:fill"), fill)
+    cell._tc.get_or_add_tcPr().append(shading)
+
+
+def build_word_report():
+    document = Document()
+    section = document.sections[0]
+    section.top_margin = Cm(2)
+    section.bottom_margin = Cm(2)
+    section.left_margin = Cm(2.2)
+    section.right_margin = Cm(2.2)
+
+    normal = document.styles["Normal"]
+    normal.font.name = "Arial"
+    normal.font.size = Pt(12)
+    normal._element.rPr.rFonts.set(qn("w:eastAsia"), "Arial")
+    normal.paragraph_format.line_spacing = 1
+    normal.paragraph_format.space_after = Pt(6)
+    normal.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+
+    for style_name in ("Title", "Subtitle", "Heading 1", "Heading 2"):
+        style = document.styles[style_name]
+        style.font.name = "Arial"
+        style._element.rPr.rFonts.set(qn("w:eastAsia"), "Arial")
+        style.font.color.rgb = RGBColor(23, 50, 77)
+
+    document.styles["Title"].font.size = Pt(22)
+    document.styles["Title"].font.bold = True
+    document.styles["Heading 1"].font.size = Pt(14)
+    document.styles["Heading 1"].font.bold = True
+    document.styles["Heading 1"].paragraph_format.keep_with_next = True
+
+    title_p = document.add_paragraph(style="Title")
+    title_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    title_p.add_run("ANÁLISIS DE UN CASO\nSOBRE CONFLICTOS LABORALES")
+    subtitle_p = document.add_paragraph()
+    subtitle_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    subtitle_run = subtitle_p.add_run(
+        "Fábrica de dulces · Evaluación sumativa, semana 3"
+    )
+    subtitle_run.font.name = "Arial"
+    subtitle_run.font.size = Pt(12)
+    subtitle_run.font.color.rgb = RGBColor(94, 106, 115)
+
+    document.add_paragraph()
+    table = document.add_table(rows=4, cols=2)
+    table.style = "Table Grid"
+    data = (
+        ("Nombre:", ""),
+        ("Carrera:", ""),
+        ("Docente:", ""),
+        ("Fecha:", ""),
+    )
+    for row, (label, value) in zip(table.rows, data):
+        row.cells[0].text = label
+        row.cells[1].text = value
+        row.cells[0].paragraphs[0].runs[0].bold = True
+        set_cell_shading(row.cells[0], "EDF3F8")
+        set_cell_shading(row.cells[1], "EDF3F8")
+        row.cells[0].width = Cm(3.2)
+        row.cells[1].width = Cm(11)
+
+    document.add_paragraph()
+    purpose = document.add_paragraph()
+    purpose.add_run("Propósito del trabajo. ").bold = True
+    purpose.add_run(
+        "Analizar los problemas de comunicación, trabajo en equipo y liderazgo "
+        "presentes en el caso, y proponer medidas realistas para recuperar la "
+        "coordinación, la motivación y la confianza."
+    )
+    document.add_page_break()
+
+    sections = [
+        (
+            "Introducción",
+            [
+                "El caso muestra una fábrica que no tiene un solo problema, sino varios "
+                "que se alimentan entre sí. La información incompleta produce rumores; "
+                "la falta de claridad en los roles genera errores; y la ausencia de un "
+                "liderazgo cercano deja a las personas sin orientación. Como resultado, "
+                "disminuyen la productividad y la calidad, empeora el ambiente laboral y "
+                "también se debilita la relación con los clientes. A continuación, analizo "
+                "cada aspecto y planteo una propuesta de mejora que se puede aplicar de "
+                "manera gradual."
+            ],
+        ),
+        (
+            "1. Desafíos que afectan el funcionamiento de la empresa",
+            [
+                "El primer desafío es la comunicación deficiente. La información oficial "
+                "llega tarde o simplemente no llega, por lo que los rumores ocupan ese "
+                "espacio. Esto aumenta la incertidumbre y hace que los trabajadores "
+                "desconfíen tanto de sus jefaturas como de sus compañeros.",
+                "El segundo desafío es la falta de definición de funciones y "
+                "responsabilidades. En el caso, dos personas creen que la otra debía "
+                "empacar los bombones. Esta situación demuestra que no existe una "
+                "distribución clara de las tareas. Como consecuencia, algunas labores se "
+                "duplican, otras quedan sin realizar y aparecen errores que afectan la "
+                "calidad del producto.",
+                "El tercer desafío es un liderazgo débil y reactivo. Los jefes se "
+                "mantienen aislados, solo entregan órdenes y actúan cuando el problema ya "
+                "ocurrió. No orientan, no motivan y tampoco abren espacios para conversar. "
+                "A esto se suma un cuarto desafío: el deterioro del clima laboral, que se "
+                "refleja en desmotivación, tensión y posible salida de trabajadores "
+                "valiosos. Todos estos factores repercuten finalmente en la productividad, "
+                "la calidad y la confianza de los clientes.",
+            ],
+        ),
+        (
+            "2. Dificultades de comunicación y posibles mejoras",
+            [
+                "Las principales dificultades son la comunicación en una sola dirección, "
+                "la escasa transparencia y la falta de escucha. Las jefaturas comunican "
+                "órdenes, pero no explican sus razones ni permiten que el equipo haga "
+                "preguntas. Además, al no existir un canal oficial y frecuente, las "
+                "personas completan la información con suposiciones. El rumor sobre el "
+                "cierre de la línea de caramelos es un ejemplo claro. También falta "
+                "retroalimentación: los problemas se conocen cuando ya provocaron atrasos "
+                "o errores.",
+                "Para lograr una comunicación más efectiva, propondría una reunión breve "
+                "al inicio de cada turno, de no más de diez minutos, donde se informen las "
+                "metas del día, cambios, responsables y riesgos. La misma información debe "
+                "quedar escrita en un panel visible o canal interno para evitar versiones "
+                "diferentes. También es importante aplicar escucha activa: dejar hablar, "
+                "hacer preguntas para aclarar y resumir lo entendido antes de responder. "
+                "Cuando se formule un juicio, este debe apoyarse en hechos observables. Por "
+                "ejemplo, en vez de decir «el equipo es desordenado», corresponde señalar "
+                "qué tarea quedó pendiente, cuándo ocurrió y qué efecto tuvo. Finalmente, "
+                "un espacio semanal de retroalimentación permitiría resolver dudas antes "
+                "de que se conviertan en conflictos.",
+            ],
+        ),
+        (
+            "3. Análisis del trabajo en equipo",
+            [
+                "En la fábrica existen personas que trabajan en el mismo lugar, pero no "
+                "se observa un equipo realmente coordinado. Un equipo necesita una meta "
+                "común, funciones conocidas, comunicación constante y confianza para pedir "
+                "ayuda. En este caso, cada trabajador parece concentrarse en resolver lo "
+                "inmediato sin tener una visión compartida del proceso completo. Por eso, "
+                "un error en el empaque no se entiende como un problema de todos, aunque "
+                "termine afectando la producción y al cliente.",
+                "La falta de claridad genera duplicación de tareas y vacíos de "
+                "responsabilidad. Al mismo tiempo, los rumores y la tensión reducen la "
+                "confianza, por lo que es probable que las personas eviten preguntar o "
+                "reconocer un error por temor a ser culpadas. Esto impide la colaboración "
+                "y hace que los conflictos se vuelvan personales en vez de centrarse en "
+                "el proceso de trabajo.",
+                "Para fortalecer el equipo, primero se debe acordar un objetivo concreto, "
+                "por ejemplo: disminuir los errores de empaque y cumplir la producción "
+                "diaria sin sacrificar la calidad. Después, conviene elaborar una matriz "
+                "simple de responsabilidades para que cada tarea tenga una persona "
+                "encargada, alguien que aprueba y compañeros que deben ser informados. "
+                "También servirían reuniones cortas entre producción, empaque y control de "
+                "calidad, ya que estas áreas dependen unas de otras. El avance debe medirse "
+                "con indicadores compartidos, no para buscar culpables, sino para detectar "
+                "qué parte del proceso necesita apoyo. Reconocer las mejoras del grupo "
+                "ayudaría a recuperar el compromiso.",
+            ],
+        ),
+        (
+            "4. Tipo de liderazgo y propuesta de mejora",
+            [
+                "El liderazgo presente se puede describir como autoritario y reactivo. Es "
+                "autoritario porque las jefaturas se limitan a dar instrucciones sin abrir "
+                "diálogo, y es reactivo porque solo «apagan incendios» cuando los "
+                "conflictos ya están instalados. También tiene rasgos de liderazgo ausente, "
+                "debido a que los trabajadores no saben a quién acudir para recibir "
+                "orientación. Este estilo no es efectivo en la situación descrita: puede "
+                "lograr obediencia momentánea, pero no genera confianza, compromiso ni "
+                "aprendizaje.",
+                "La situación mejoraría con un liderazgo participativo y transformacional. "
+                "Participativo, porque las decisiones relacionadas con el trabajo diario "
+                "deben considerar la experiencia de quienes conocen la producción. "
+                "Transformacional, porque se necesita recuperar un sentido común: fabricar "
+                "productos de calidad, cuidar al equipo y volver a ganar la confianza de "
+                "los clientes. Esto no significa que todas las decisiones se voten. En "
+                "una emergencia, la jefatura debe actuar con rapidez; sin embargo, en la "
+                "gestión normal debe explicar las decisiones, escuchar propuestas, dar "
+                "retroalimentación y delegar con claridad.",
+                "En la práctica, cada líder debería recorrer periódicamente la planta, "
+                "realizar conversaciones breves con su equipo y comprometerse con acciones "
+                "que luego pueda comprobar. Además, tendría que reconocer los buenos "
+                "resultados, abordar los errores como oportunidades de mejora y mediar los "
+                "conflictos usando hechos, escucha activa y acuerdos concretos. Así, el "
+                "liderazgo dejaría de ser una figura distante y pasaría a funcionar como "
+                "un apoyo para coordinar el trabajo.",
+            ],
+        ),
+        (
+            "Conclusión",
+            [
+                "La fábrica todavía puede revertir su situación si enfrenta los problemas "
+                "de manera conectada. No basta con enviar más instrucciones: se requiere "
+                "información clara, responsabilidades visibles y líderes presentes. La "
+                "propuesta «Dulce Acuerdo», resumida en la infografía, comienza con medidas "
+                "sencillas durante treinta días y usa indicadores para revisar si realmente "
+                "hay avances. Si las personas saben qué hacer, pueden expresar sus dudas y "
+                "ven que sus aportes son considerados, será más posible recuperar el buen "
+                "clima, mejorar la calidad y fortalecer la relación con los clientes."
+            ],
+        ),
+        (
+            "Fuentes consultadas",
+            [
+                "Material de evaluación sumativa, semana 3: Análisis de un caso sobre "
+                "conflictos laborales.",
+                "Vergara González, K. (s. f.). Comunicación profesional efectiva: Apunte "
+                "semana 3. En especial, se aplicaron las etapas de lectura, inferencia y "
+                "poslectura para organizar el análisis del caso.",
+            ],
+        ),
+    ]
+
+    for heading, paragraphs in sections:
+        document.add_heading(heading, level=1)
+        for text in paragraphs:
+            paragraph = document.add_paragraph(text)
+            paragraph.paragraph_format.line_spacing = 1
+            paragraph.paragraph_format.space_after = Pt(6)
+            paragraph.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+
+    for section in document.sections:
+        footer = section.footer.paragraphs[0]
+        footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = footer.add_run("Comunicación profesional efectiva · Evaluación sumativa")
+        run.font.name = "Arial"
+        run.font.size = Pt(8)
+        run.font.color.rgb = RGBColor(94, 106, 115)
+
+    document.core_properties.title = "Análisis de un caso sobre conflictos laborales"
+    document.core_properties.author = "Estudiante"
+    document.core_properties.subject = "Evaluación sumativa, semana 3"
+    document.save(WORD_PATH)
+
+
 if __name__ == "__main__":
     build_report()
     build_infographic()
     combine_pdfs()
+    build_word_report()
     for path in (REPORT_PATH, INFOGRAPHIC_PATH, COMBINED_PATH):
         reader = PdfReader(str(path))
         print(f"{path}: {len(reader.pages)} página(s), {path.stat().st_size} bytes")
+    print(f"{WORD_PATH}: {WORD_PATH.stat().st_size} bytes")
