@@ -41,6 +41,7 @@ end
 print("\nBase parts:")
 for _, part in ipairs(parts) do
 	local position = part.CFrame.Position
+	local lookVector = part.CFrame.LookVector
 	local hasSize, size = pcall(function()
 		return part.Size
 	end)
@@ -49,12 +50,15 @@ for _, part in ipairs(parts) do
 		sizeText = string.format("%.2f, %.2f, %.2f", size.X, size.Y, size.Z)
 	end
 	print(string.format(
-		"%s\t%s\tpos=(%.2f, %.2f, %.2f)\tsize=(%s)",
+		"%s\t%s\tpos=(%.2f, %.2f, %.2f)\tlook=(%.2f, %.2f, %.2f)\tsize=(%s)",
 		part.ClassName,
 		part:GetFullName(),
 		position.X,
 		position.Y,
 		position.Z,
+		lookVector.X,
+		lookVector.Y,
+		lookVector.Z,
 		sizeText
 	))
 end

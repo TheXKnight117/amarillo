@@ -313,9 +313,24 @@ addBillboardMessage(
 )
 
 -- Three memories alternate along the path toward the torii gate.
-addPhotoDisplay(mosaics[1], 1, CFrame.new(55, 54, -431), "Tú y yo")
-addPhotoDisplay(mosaics[2], 2, CFrame.new(95, 51, -486) * CFrame.Angles(0, math.pi, 0), "Nuestro mundo juntos")
-addPhotoDisplay(mosaics[3], 3, CFrame.new(132, 48, -429), "Siempre a tu lado")
+addPhotoDisplay(
+	mosaics[1],
+	1,
+	CFrame.new(62, 53, -443) * CFrame.Angles(0, math.pi / 2, 0),
+	"Tú y yo"
+)
+addPhotoDisplay(
+	mosaics[2],
+	2,
+	CFrame.new(118, 49, -468) * CFrame.Angles(0, math.pi / 2, 0),
+	"Nuestro mundo juntos"
+)
+addPhotoDisplay(
+	mosaics[3],
+	3,
+	CFrame.new(190, 48, -443) * CFrame.Angles(0, math.pi / 2, 0),
+	"Siempre a tu lado"
+)
 
 local heartPositions = {
 	Vector3.new(38, 51, -470),
