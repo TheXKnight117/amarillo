@@ -1,6 +1,9 @@
 # Jardín romántico para Isabella
 
-El archivo final es `Isabella-Jardin-Romantico.rbxl`.
+Los archivos finales son:
+
+- `Isabella-Jardin-Romantico.rbxl`, versión binaria recomendada.
+- `Isabella-Jardin-Romantico.rbxlx`, versión XML de respaldo.
 
 ## Abrir en Roblox Studio
 
@@ -9,6 +12,9 @@ El archivo final es `Isabella-Jardin-Romantico.rbxl`.
 3. Selecciona **Archivo → Abrir desde archivo**.
 4. Elige `Isabella-Jardin-Romantico.rbxl`.
 5. Presiona **Jugar** para recorrer el jardín desde el punto de aparición.
+
+Si Studio no puede abrir la versión binaria, sigue los mismos pasos con
+`Isabella-Jardin-Romantico.rbxlx`.
 
 ## Contenido añadido
 

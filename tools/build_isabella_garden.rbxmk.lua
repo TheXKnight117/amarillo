@@ -40,6 +40,7 @@ end
 local function addSurfaceText(part, face, text, color, background, textSize)
 	local gui = Instance.new("SurfaceGui", part)
 	gui.Name = "Dedicatoria"
+	gui.Adornee = part
 	gui.Face = face
 	gui.CanvasSize = Vector2.new(900, 420)
 	gui.SizingMode = Enum.SurfaceGuiSizingMode.FixedSize
@@ -77,6 +78,7 @@ local function addBillboardHeart(position, scale)
 
 	local gui = Instance.new("BillboardGui", anchor)
 	gui.Name = "Corazón"
+	gui.Adornee = anchor
 	gui.Size = UDim2.fromOffset(90 * scale, 90 * scale)
 	gui.AlwaysOnTop = true
 	gui.LightInfluence = 0
@@ -108,6 +110,7 @@ local function addPhotoDisplay(photo, index, cframe, caption)
 		false,
 		model
 	)
+	model.PrimaryPart = board
 
 	local glow = makePart(
 		"Resplandor",
@@ -127,6 +130,7 @@ local function addPhotoDisplay(photo, index, cframe, caption)
 
 	local gui = Instance.new("SurfaceGui", board)
 	gui.Name = "Foto integrada"
+	gui.Adornee = board
 	gui.Face = Enum.NormalId.Front
 	gui.CanvasSize = Vector2.new(canvasWidth, canvasHeight)
 	gui.SizingMode = Enum.SurfaceGuiSizingMode.FixedSize
@@ -228,6 +232,7 @@ local entrance = makePart(
 	Enum.Material.Neon,
 	false
 )
+root.PrimaryPart = entrance
 addSurfaceText(
 	entrance,
 	Enum.NormalId.Left,
@@ -310,7 +315,7 @@ finalLight.Brightness = 2
 finalLight.Range = 36
 finalLight.Shadows = true
 
-fs.write(output, game, "rbxl")
+fs.write(output, game)
 
 print("Created romantic garden for Isabella")
 print("Photo mosaics:", #mosaics)
