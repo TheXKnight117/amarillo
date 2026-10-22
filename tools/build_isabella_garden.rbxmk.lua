@@ -20,6 +20,31 @@ local white = Color3.fromRGB(255, 255, 255)
 local gold = Color3.fromRGB(255, 214, 112)
 local plum = Color3.fromRGB(82, 31, 73)
 
+-- The source map contains a second spawn hundreds of studs away from the
+-- garden. Disable it and orient the garden spawn toward the romantic path.
+for _, instance in ipairs(workspace:GetDescendants()) do
+	if instance.ClassName == "SpawnLocation" then
+		local position = instance.CFrame.Position
+		if position.X < -300 then
+			instance.Enabled = false
+		else
+			instance.Enabled = true
+			instance.CFrame =
+				CFrame.new(12.75, 43.08, -455.37)
+				* CFrame.Angles(0, -math.pi / 2, 0)
+		end
+	end
+end
+
+local camera = workspace:FindFirstChild("Camera")
+if camera then
+	camera.CFrame = CFrame.lookAt(
+		Vector3.new(-4, 65, -455),
+		Vector3.new(72, 50, -455)
+	)
+	camera.Focus = CFrame.new(72, 50, -455)
+end
+
 local function makePart(name, size, cframe, color, material, canCollide, parent)
 	local part = Instance.new("Part", parent or root)
 	part.Name = name
@@ -93,6 +118,39 @@ local function addBillboardHeart(position, scale)
 	label.TextStrokeColor3 = white
 	label.TextStrokeTransparency = 0.15
 	label.Font = Enum.Font.GothamBlack
+end
+
+local function addBillboardMessage(position, text)
+	local anchor = makePart(
+		"Inicio del recorrido",
+		Vector3.new(0.2, 0.2, 0.2),
+		CFrame.new(position),
+		pink,
+		Enum.Material.Neon,
+		false
+	)
+	anchor.Transparency = 1
+
+	local gui = Instance.new("BillboardGui", anchor)
+	gui.Name = "Indicador"
+	gui.Adornee = anchor
+	gui.Size = UDim2.fromOffset(520, 130)
+	gui.AlwaysOnTop = true
+	gui.LightInfluence = 0
+
+	local label = Instance.new("TextLabel", gui)
+	label.Name = "Texto"
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundColor3 = plum
+	label.BackgroundTransparency = 0.15
+	label.BorderSizePixel = 0
+	label.Text = text
+	label.TextColor3 = white
+	label.TextScaled = true
+	label.TextWrapped = true
+	label.TextStrokeColor3 = pink
+	label.TextStrokeTransparency = 0.2
+	label.Font = Enum.Font.GothamBold
 end
 
 local function addPhotoDisplay(photo, index, cframe, caption)
@@ -248,6 +306,10 @@ addSurfaceText(
 	plum,
 	blush,
 	50
+)
+addBillboardMessage(
+	Vector3.new(13, 51, -455),
+	"COMIENZA AQUÍ  ♥\nSigue el camino para Isabella"
 )
 
 -- Three memories alternate along the path toward the torii gate.

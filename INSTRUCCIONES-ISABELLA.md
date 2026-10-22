@@ -19,6 +19,7 @@ Si Studio no puede abrir la versión binaria, sigue los mismos pasos con
 ## Contenido añadido
 
 - Entrada iluminada con una dedicatoria para Isabella.
+- Inicio configurado directamente frente al recorrido romántico.
 - Tres fotografías integradas directamente en el mapa como mosaicos.
 - Marcos dorados y mensajes bajo cada fotografía.
 - Corazones flotantes a lo largo del camino.
