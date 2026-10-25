@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Informe — Diseño UML de Frogger Mobile</title>
+<style>
+  @page { size: A4; margin: 18mm 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #243b53;
+         font-size: 10.5pt; line-height: 1.48; }
+  .page { min-height: 261mm; position: relative; page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  .cover { display: flex; min-height: 260mm; flex-direction: column; justify-content: center;
+           text-align: center; padding: 0 18mm; }
+  .cover .tag { color: #176b87; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+  .cover h1 { margin: 18px 0 8px; font-size: 28pt; line-height: 1.14; color: #102a43; }
+  .cover h2 { margin: 0; font-size: 16pt; font-weight: 400; color: #486581; }
+  .rule { width: 90px; height: 5px; margin: 28px auto; background: #19a7a0; border-radius: 4px; }
+  .identity { margin-top: 40px; padding: 18px; border: 1px solid #bcccdc; border-radius: 10px; background: #f5f8fb; }
+  .identity p { margin: 5px; }
+  h1.section { margin: 0 0 16px; padding: 0 0 9px; border-bottom: 3px solid #19a7a0;
+               font-size: 20pt; color: #102a43; }
+  h2 { margin: 18px 0 7px; font-size: 14pt; color: #176b87; }
+  h3 { margin: 14px 0 5px; font-size: 11.5pt; color: #334e68; }
+  p { margin: 0 0 10px; text-align: justify; }
+  ul, ol { margin: 5px 0 12px; padding-left: 22px; }
+  li { margin-bottom: 5px; }
+  .lead { font-size: 12pt; color: #334e68; }
+  .callout { margin: 14px 0; padding: 12px 14px; border-left: 5px solid #19a7a0;
+             background: #edf8f7; border-radius: 0 7px 7px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 15px; font-size: 9.3pt; }
+  th { padding: 8px; text-align: left; color: #fff; background: #176b87; }
+  td { padding: 7px 8px; vertical-align: top; border: 1px solid #bcccdc; }
+  tr:nth-child(even) td { background: #f5f8fb; }
+  code { font-family: "Courier New", monospace; font-size: 9pt; color: #102a43; }
+  .diagram-page { min-height: 261mm; display: flex; flex-direction: column; }
+  .diagram { width: 100%; margin: 8px auto 4px; border: 1px solid #bcccdc; border-radius: 6px; }
+  .caption { text-align: center; font-size: 8.5pt; color: #627d98; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .card { padding: 12px; border: 1px solid #bcccdc; border-radius: 8px; background: #f8fafc; }
+  .card h3 { margin-top: 0; color: #176b87; }
+  .footer { position: absolute; bottom: 0; left: 0; right: 0; padding-top: 7px;
+            border-top: 1px solid #d9e2ec; color: #829ab1; font-size: 8pt; }
+  .footer span:last-child { float: right; }
+  .check td:first-child { width: 31%; font-weight: 700; color: #334e68; }
+  .refs p { padding-left: 18px; text-indent: -18px; margin-bottom: 9px; }
+</style>
+</head>
+<body>
+<section class="page cover">
+  <div class="tag">Actividad formativa · Semana 4</div>
+  <h1>Diseño de un diagrama de clases UML para Frogger Mobile</h1>
+  <h2>Informe de modelado orientado a objetos</h2>
+  <div class="rule"></div>
+  <div class="identity">
+    <p><strong>Estudiante:</strong> Cristopher Alexander Bañares Suarez</p>
+    <p><strong>Asignatura:</strong> Diseño de Software</p>
+    <p><strong>Producto:</strong> Informe y diagrama de clases UML</p>
+    <p><strong>Modalidad:</strong> Trabajo individual</p>
+  </div>
+  <div class="footer"><span>Diseño de Software</span><span>1</span></div>
+</section>
+
+<section class="page">
+  <h1 class="section">1. Introducción y alcance</h1>
+  <p class="lead">El presente informe transforma los elementos relevantes del videojuego Frogger Mobile en un modelo estructural de clases UML.</p>
+  <p>El propósito es representar las responsabilidades, los datos y las colaboraciones necesarias para una versión móvil del juego. En ella, una rana cruza un escenario dividido en carriles, evita vehículos, utiliza troncos como apoyo y alcanza una o más metas. El modelo se mantiene en un nivel conceptual: describe la estructura del dominio sin incorporar detalles de interfaz gráfica, almacenamiento o plataforma que no son necesarios para explicar la mecánica principal.</p>
+
+  <h2>1.1 Objetivo</h2>
+  <p>Diseñar un diagrama de clases con atributos, métodos, visibilidad, multiplicidades y relaciones UML, aplicando abstracción, encapsulamiento, modularidad y jerarquía simple.</p>
+
+  <h2>1.2 Supuestos de diseño</h2>
+  <ul>
+    <li>Una instancia de <strong>Juego</strong> controla una rana activa, un marcador y uno o más niveles.</li>
+    <li>Cada nivel se compone de uno o más carriles y una o más metas.</li>
+    <li>Los carriles agrupan cero o más obstáculos; estos pueden ser vehículos o troncos.</li>
+    <li>La rana pierde una vida al colisionar con un vehículo o al no superar una zona de riesgo.</li>
+    <li>Un tronco puede sostener y transportar temporalmente a la rana.</li>
+    <li>Los tipos enumerados <code>EstadoJuego</code>, <code>Direccion</code>, <code>TipoCarril</code> y <code>TipoVehiculo</code> restringen valores válidos, aunque no se desarrollan como clases para evitar detalle innecesario.</li>
+  </ul>
+
+  <div class="callout"><strong>Criterio de abstracción:</strong> se modelan solo las características que influyen en las reglas y la coordinación del juego. Aspectos como colores, sonidos, texturas o controles táctiles quedan fuera del alcance estructural.</div>
+
+  <h2>1.3 Proceso aplicado</h2>
+  <ol>
+    <li>Identificación de sustantivos y responsabilidades del caso.</li>
+    <li>Selección de clases y eliminación de elementos redundantes.</li>
+    <li>Asignación de atributos y operaciones coherentes.</li>
+    <li>Definición de herencia, composición, agregación, asociación y dependencia.</li>
+    <li>Revisión de visibilidad, multiplicidades, legibilidad y modularidad.</li>
+  </ol>
+  <div class="footer"><span>Cristopher Alexander Bañares Suarez</span><span>2</span></div>
+</section>
+
+<section class="page">
+  <h1 class="section">2. Identificación de clases</h1>
+  <table>
+    <thead><tr><th>Clase</th><th>Responsabilidad</th><th>Atributos principales</th><th>Métodos principales</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Juego</strong></td><td>Coordinar el ciclo general y el estado de la partida.</td><td>estado, puntaje, vidasRestantes</td><td>iniciar, pausar, reanudar, finalizar, actualizar</td></tr>
+      <tr><td><strong>Marcador</strong></td><td>Administrar el puntaje actual y máximo.</td><td>puntajeActual, puntajeMaximo</td><td>sumarPuntos, reiniciar, obtenerPuntaje</td></tr>
+      <tr><td><strong>Nivel</strong></td><td>Representar una etapa, su dificultad y condición de término.</td><td>numero, dificultad, tiempoLimite</td><td>iniciar, aumentarDificultad, comprobarFinalizacion</td></tr>
+      <tr><td><strong>Carril</strong></td><td>Organizar una franja del escenario y sus obstáculos.</td><td>indice, tipo, direccion</td><td>agregarObstaculo, actualizar</td></tr>
+      <tr><td><strong>Meta</strong></td><td>Representar un destino disponible u ocupado.</td><td>identificador, ocupada</td><td>ocupar, liberar, estaDisponible</td></tr>
+      <tr><td><strong>EntidadMovil</strong></td><td>Abstraer estado y operaciones compartidas por actores que se desplazan.</td><td>posicionX, posicionY, velocidad, activo</td><td>mover, actualizar, obtenerPosicion</td></tr>
+      <tr><td><strong>Rana</strong></td><td>Representar al personaje controlado y sus acciones.</td><td>vidas, posicionInicial</td><td>saltar, perderVida, reiniciarPosicion, llegoAMeta</td></tr>
+      <tr><td><strong>Obstaculo</strong></td><td>Definir el comportamiento común de objetos de riesgo o apoyo.</td><td>direccion</td><td>colisionar, salirDePantalla</td></tr>
+      <tr><td><strong>Vehiculo</strong></td><td>Especializar un obstáculo dañino terrestre.</td><td>tipo, danio</td><td>atropellar</td></tr>
+      <tr><td><strong>Tronco</strong></td><td>Especializar un obstáculo acuático que puede transportar a la rana.</td><td>longitud</td><td>transportar, puedeSostener</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2.1 Coherencia de atributos y operaciones</h2>
+  <p>Los atributos describen el estado que cada clase necesita conservar. Las operaciones expresan comportamientos propios de esa clase y evitan que otras entidades manipulen directamente sus datos. Por ejemplo, el puntaje se modifica mediante <code>sumarPuntos()</code> y la disponibilidad de una meta mediante <code>ocupar()</code> o <code>liberar()</code>.</p>
+  <p><code>EntidadMovil</code> y <code>Obstaculo</code> son clases abstractas: organizan características comunes, pero el juego trabaja con instancias concretas como <code>Rana</code>, <code>Vehiculo</code> y <code>Tronco</code>.</p>
+  <div class="footer"><span>Cristopher Alexander Bañares Suarez</span><span>3</span></div>
+</section>
+
+<section class="page">
+  <h1 class="section">3. Aplicación de principios orientados a objetos</h1>
+  <div class="two-col">
+    <div class="card"><h3>Abstracción</h3><p>El modelo conserva solo los elementos esenciales de la mecánica. <code>Rana</code> conoce sus vidas y posición inicial; no incluye aspectos visuales que corresponden a otros subsistemas.</p></div>
+    <div class="card"><h3>Encapsulamiento</h3><p>Los atributos se declaran privados (<code>−</code>) para impedir cambios externos sin control. Los métodos públicos (<code>+</code>) forman la interfaz de cada clase. Los datos reutilizables por subclases son protegidos (<code>#</code>).</p></div>
+    <div class="card"><h3>Modularidad</h3><p>Las clases se separan en tres paquetes conceptuales: <em>Núcleo del juego</em>, <em>Escenario</em> y <em>Actores móviles</em>. Cada módulo concentra una responsabilidad y mantiene relaciones explícitas con los demás.</p></div>
+    <div class="card"><h3>Jerarquía</h3><p><code>EntidadMovil</code> generaliza a <code>Rana</code> y <code>Obstaculo</code>. A su vez, <code>Vehiculo</code> y <code>Tronco</code> especializan a <code>Obstaculo</code>. Así se reutilizan posición, velocidad y actualización sin duplicación.</p></div>
+  </div>
+
+  <h2>3.1 Decisiones de visibilidad</h2>
+  <table>
+    <thead><tr><th>Símbolo</th><th>Uso en el modelo</th><th>Justificación</th></tr></thead>
+    <tbody>
+      <tr><td><strong>− Privado</strong></td><td>Estado, puntaje, vidas, dificultad, ocupación y tipos concretos.</td><td>Protege invariantes y obliga a usar operaciones controladas.</td></tr>
+      <tr><td><strong># Protegido</strong></td><td>Posición, velocidad, estado activo y dirección.</td><td>Permite que las especializaciones implementen su movimiento sin exponer datos al resto del sistema.</td></tr>
+      <tr><td><strong>+ Público</strong></td><td>Acciones como iniciar, saltar, colisionar, ocupar y actualizar.</td><td>Define los servicios mediante los cuales colaboran los objetos.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3.2 Beneficios esperados</h2>
+  <p>La separación propuesta permite incorporar nuevos obstáculos —por ejemplo, una tortuga o una serpiente— como especializaciones sin modificar el contrato general de movimiento. También facilita cambiar el número de carriles o metas por nivel sin alterar las clases de los actores móviles.</p>
+  <div class="callout"><strong>Ejemplo de encapsulamiento:</strong> en vez de asignar directamente <code>meta.ocupada = true</code>, la rana solicita la operación <code>meta.ocupar()</code>. La propia clase puede verificar previamente si la meta está disponible.</div>
+  <div class="footer"><span>Cristopher Alexander Bañares Suarez</span><span>4</span></div>
+</section>
+
+<section class="page">
+  <h1 class="section">4. Relaciones y multiplicidades UML</h1>
+  <table>
+    <thead><tr><th>Relación</th><th>Notación</th><th>Interpretación</th></tr></thead>
+    <tbody>
+      <tr><td>Juego–Marcador</td><td>Composición 1 a 1</td><td>El marcador pertenece a una partida y su ciclo de vida depende de ella.</td></tr>
+      <tr><td>Juego–Rana</td><td>Composición 1 a 1</td><td>Cada partida controla exactamente una rana activa.</td></tr>
+      <tr><td>Juego–Nivel</td><td>Composición 1 a 1..*</td><td>Un juego contiene uno o más niveles; estos forman parte de su estructura.</td></tr>
+      <tr><td>Nivel–Carril</td><td>Composición 1 a 1..*</td><td>Un nivel se construye con uno o más carriles.</td></tr>
+      <tr><td>Nivel–Meta</td><td>Composición 1 a 1..*</td><td>Las metas son partes propias del nivel.</td></tr>
+      <tr><td>Carril–Obstaculo</td><td>Agregación 1 a 0..*</td><td>Un carril agrupa obstáculos, pero puede existir temporalmente vacío.</td></tr>
+      <tr><td>EntidadMovil–Rana/Obstaculo</td><td>Generalización</td><td>Las subclases heredan posición, velocidad y comportamiento de actualización.</td></tr>
+      <tr><td>Obstaculo–Vehiculo/Tronco</td><td>Generalización</td><td>Cada tipo implementa un efecto particular sobre la rana.</td></tr>
+      <tr><td>Rana–Tronco</td><td>Asociación 1 a 0..1</td><td>En un instante, la rana puede estar apoyada en ningún tronco o en uno.</td></tr>
+      <tr><td>Rana–Meta</td><td>Dependencia</td><td>La rana consulta o usa temporalmente una meta para completar el recorrido.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4.1 Ejemplo de colaboración</h2>
+  <ol>
+    <li><code>Juego.iniciar()</code> activa el nivel y reinicia el marcador.</li>
+    <li>La entrada del usuario provoca <code>Rana.saltar(direccion)</code>.</li>
+    <li>El ciclo <code>Juego.actualizar(deltaTiempo)</code> solicita la actualización de entidades móviles.</li>
+    <li>Si un vehículo coincide con la rana, ejecuta <code>atropellar(rana)</code> y la rana procesa <code>perderVida()</code>.</li>
+    <li>Si la rana permanece sobre un tronco, este ejecuta <code>transportar(rana)</code>.</li>
+    <li>Cuando alcanza una meta disponible, se ejecuta <code>Meta.ocupar()</code> y se suman puntos.</li>
+  </ol>
+
+  <h2>4.2 Consistencia del modelo</h2>
+  <p>Las multiplicidades precisan cuántos objetos pueden participar en cada relación. La composición se reserva para dependencias fuertes de ciclo de vida, mientras que la agregación expresa una agrupación más flexible. La herencia se utiliza únicamente donde existe una relación “es-un”, evitando usarla como sustituto de una asociación.</p>
+  <div class="footer"><span>Cristopher Alexander Bañares Suarez</span><span>5</span></div>
+</section>
+
+<section class="page diagram-page">
+  <h1 class="section">5. Diagrama de clases</h1>
+  <p>La figura presenta las clases organizadas por módulos, con sus atributos, operaciones, niveles de visibilidad y relaciones principales.</p>
+  <img class="diagram" src="Diagrama_Clases_Frogger_Mobile.png" alt="Diagrama de clases UML de Frogger Mobile">
+  <p class="caption">Figura 1. Diagrama de clases UML propuesto para Frogger Mobile. Elaboración propia.</p>
+  <div class="callout"><strong>Lectura rápida:</strong> los rombos negros representan composición; el rombo blanco, agregación; los triángulos vacíos, herencia; y la línea discontinua, dependencia.</div>
+  <div class="footer"><span>Cristopher Alexander Bañares Suarez</span><span>6</span></div>
+</section>
+
+<section class="page">
+  <h1 class="section">6. Conclusiones y verificación</h1>
+  <p>El modelo propuesto representa la estructura central de Frogger Mobile mediante clases con responsabilidades delimitadas. La abstracción evita detalles ajenos a la mecánica; el encapsulamiento protege el estado; la modularidad organiza el sistema en componentes comprensibles; y la jerarquía reutiliza las características comunes de las entidades móviles.</p>
+  <p>Las relaciones UML muestran tanto la pertenencia fuerte de niveles y elementos estructurales como las interacciones temporales entre la rana, los troncos y las metas. Las multiplicidades eliminan ambigüedades y permiten comprender cuántas instancias participan en cada colaboración.</p>
+
+  <h2>6.1 Revisión según los criterios de evaluación</h2>
+  <table class="check">
+    <tbody>
+      <tr><td>Clases y atributos</td><td>Se identifican diez clases clave, con atributos y métodos vinculados a responsabilidades concretas.</td></tr>
+      <tr><td>Abstracción y encapsulamiento</td><td>Se excluyen detalles irrelevantes y se aplican correctamente las visibilidades pública, privada y protegida.</td></tr>
+      <tr><td>Modularidad y relaciones</td><td>El modelo usa tres paquetes, generalización, composición, agregación, asociación, dependencia y multiplicidades.</td></tr>
+      <tr><td>Claridad y legibilidad</td><td>Las clases están agrupadas por función, se utiliza una leyenda y las relaciones poseen etiquetas cuando aportan significado.</td></tr>
+      <tr><td>Formato solicitado</td><td>Se adjuntan el informe PDF, el diagrama PNG y el archivo editable PlantUML.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Referencias bibliográficas</h2>
+  <div class="refs">
+    <p>Booch, G., Rumbaugh, J. y Jacobson, I. (2006). <em>El lenguaje unificado de modelado: guía del usuario</em>. Pearson.</p>
+    <p>Pressman, R. (2010). <em>Ingeniería de software: un enfoque práctico</em>. McGraw-Hill.</p>
+    <p>Schmuller, J. (2004). <em>Aprenda UML en 24 horas</em>. Pearson Educación.</p>
+    <p>Santo Tomás Online. (s. f.). <em>Diseño de software: Apunte semana 4</em> [Material de asignatura].</p>
+    <p>Sommerville, I. (2011). <em>Ingeniería del software</em> (9.ª ed.). Pearson.</p>
+  </div>
+  <div class="footer"><span>Cristopher Alexander Bañares Suarez</span><span>7</span></div>
+</section>
+</body>
+</html>

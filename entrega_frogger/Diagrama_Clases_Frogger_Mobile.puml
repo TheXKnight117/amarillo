@@ -1,0 +1,129 @@
+@startuml
+title Frogger Mobile — Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #243B53
+  ArrowColor #486581
+}
+
+package "Núcleo del juego" {
+  class Juego {
+    - estado: EstadoJuego
+    - puntaje: int
+    - vidasRestantes: int
+    + iniciar(): void
+    + pausar(): void
+    + reanudar(): void
+    + finalizar(): void
+    + actualizar(deltaTiempo: float): void
+  }
+
+  class Marcador {
+    - puntajeActual: int
+    - puntajeMaximo: int
+    + sumarPuntos(cantidad: int): void
+    + reiniciar(): void
+    + obtenerPuntaje(): int
+  }
+}
+
+package "Actores móviles" {
+  abstract class EntidadMovil {
+    # posicionX: float
+    # posicionY: float
+    # velocidad: float
+    # activo: boolean
+    + mover(): void
+    + actualizar(deltaTiempo: float): void
+    + obtenerPosicion(): Punto
+  }
+
+  class Rana {
+    - vidas: int
+    - posicionInicial: Punto
+    + saltar(direccion: Direccion): void
+    + perderVida(): void
+    + reiniciarPosicion(): void
+    + llegoAMeta(): boolean
+  }
+
+  abstract class Obstaculo {
+    # direccion: Direccion
+    + colisionar(rana: Rana): void
+    + salirDePantalla(): boolean
+  }
+
+  class Vehiculo {
+    - tipo: TipoVehiculo
+    - danio: int
+    + atropellar(rana: Rana): void
+  }
+
+  class Tronco {
+    - longitud: float
+    + transportar(rana: Rana): void
+    + puedeSostener(rana: Rana): boolean
+  }
+}
+
+package "Escenario" {
+  class Nivel {
+    - numero: int
+    - dificultad: int
+    - tiempoLimite: int
+    + iniciar(): void
+    + aumentarDificultad(): void
+    + comprobarFinalizacion(): boolean
+  }
+
+  class Carril {
+    - indice: int
+    - tipo: TipoCarril
+    - direccion: Direccion
+    + agregarObstaculo(obstaculo: Obstaculo): void
+    + actualizar(): void
+  }
+
+  class Meta {
+    - identificador: int
+    - ocupada: boolean
+    + ocupar(): void
+    + liberar(): void
+    + estaDisponible(): boolean
+  }
+}
+
+EntidadMovil <|-- Rana
+EntidadMovil <|-- Obstaculo
+Obstaculo <|-- Vehiculo
+Obstaculo <|-- Tronco
+
+Juego "1" *-- "1" Rana : controla
+Juego "1" *-- "1" Marcador : mantiene
+Juego "1" *-- "1..*" Nivel : contiene
+Nivel "1" *-- "1..*" Carril : se compone de
+Nivel "1" *-- "1..*" Meta : posee
+Carril "1" o-- "0..*" Obstaculo : agrupa
+Rana "1" -- "0..1" Tronco : se apoya en
+Rana ..> Meta : intenta alcanzar
+
+note right of EntidadMovil
+  Clase abstracta:
+  concentra estado y
+  comportamiento común.
+end note
+
+legend bottom
+  |= Notación |= Significado |
+  | + | Público |
+  | - | Privado |
+  | # | Protegido |
+  | rombo negro | Composición |
+  | rombo blanco | Agregación |
+  | triángulo vacío | Herencia |
+endlegend
+@enduml
