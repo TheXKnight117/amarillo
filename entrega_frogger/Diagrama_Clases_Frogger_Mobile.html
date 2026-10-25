@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Diagrama de clases — Frogger Mobile</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1800px; height: 1200px; overflow: hidden; }
+  body { font-family: Arial, Helvetica, sans-serif; color: #102a43; background: #f5f8fb; }
+  .canvas { position: relative; width: 1800px; height: 1200px; padding: 24px; }
+  h1 { position: absolute; top: 20px; left: 0; width: 100%; margin: 0; text-align: center;
+       font-size: 28px; letter-spacing: .4px; color: #102a43; }
+  .package { position: absolute; border: 2px dashed #9fb3c8; border-radius: 14px;
+             background: rgba(255,255,255,.55); }
+  .package > b { position: absolute; left: 16px; top: -15px; padding: 4px 10px;
+                 border: 1px solid #9fb3c8; border-radius: 6px; background: #e8f1f8;
+                 font-size: 15px; color: #334e68; }
+  .core { left: 35px; top: 75px; width: 390px; height: 640px; }
+  .scene { left: 455px; top: 75px; width: 405px; height: 975px; }
+  .actors { left: 885px; top: 75px; width: 875px; height: 995px; }
+  .class { position: absolute; z-index: 2; background: white; border: 2px solid #243b53;
+           border-radius: 7px; overflow: hidden; box-shadow: 0 5px 14px rgba(36,59,83,.12);
+           font-size: 15px; line-height: 1.34; }
+  .class .name { padding: 10px 12px; text-align: center; font-weight: 700; font-size: 18px;
+                 color: white; background: #176b87; border-bottom: 2px solid #243b53; }
+  .class.abstract .name { background: #486581; font-style: italic; }
+  .class .section { min-height: 24px; padding: 7px 11px; border-bottom: 1px solid #829ab1; }
+  .class .section:last-child { border-bottom: 0; }
+  .class .section div { white-space: nowrap; }
+  .juego { left: 60px; top: 115px; width: 340px; }
+  .marcador { left: 60px; top: 475px; width: 340px; }
+  .nivel { left: 485px; top: 115px; width: 345px; }
+  .carril { left: 485px; top: 445px; width: 345px; }
+  .meta { left: 485px; top: 795px; width: 345px; }
+  .entidad { left: 980px; top: 115px; width: 365px; }
+  .rana { left: 910px; top: 465px; width: 365px; }
+  .obstaculo { left: 1370px; top: 405px; width: 365px; }
+  .vehiculo { left: 1040px; top: 820px; width: 335px; }
+  .tronco { left: 1420px; top: 820px; width: 320px; }
+  svg { position: absolute; inset: 0; z-index: 1; }
+  svg path, svg line { stroke: #334e68; stroke-width: 2.2; fill: none; }
+  svg text { font: 14px Arial, sans-serif; fill: #243b53; paint-order: stroke; stroke: #f5f8fb; stroke-width: 5px; }
+  .dash { stroke-dasharray: 9 7; }
+  .legend { position: absolute; left: 60px; bottom: 28px; z-index: 3; width: 340px;
+            padding: 12px 15px; border: 1px solid #9fb3c8; border-radius: 8px;
+            background: #fff; font-size: 14px; line-height: 1.55; }
+  .legend b { color: #176b87; }
+  .footer { position:absolute; right: 65px; bottom: 26px; color:#627d98; font-size:14px; }
+</style>
+</head>
+<body>
+<main class="canvas">
+  <h1>Frogger Mobile — Diagrama de clases UML</h1>
+  <div class="package core"><b>Paquete: Núcleo del juego</b></div>
+  <div class="package scene"><b>Paquete: Escenario</b></div>
+  <div class="package actors"><b>Paquete: Actores móviles</b></div>
+
+  <section class="class juego"><div class="name">Juego</div><div class="section">
+    <div>− estado: EstadoJuego</div><div>− puntaje: int</div><div>− vidasRestantes: int</div>
+  </div><div class="section"><div>+ iniciar(): void</div><div>+ pausar(): void</div>
+    <div>+ reanudar(): void</div><div>+ finalizar(): void</div><div>+ actualizar(deltaTiempo: float): void</div>
+  </div></section>
+
+  <section class="class marcador"><div class="name">Marcador</div><div class="section">
+    <div>− puntajeActual: int</div><div>− puntajeMaximo: int</div>
+  </div><div class="section"><div>+ sumarPuntos(cantidad: int): void</div>
+    <div>+ reiniciar(): void</div><div>+ obtenerPuntaje(): int</div>
+  </div></section>
+
+  <section class="class nivel"><div class="name">Nivel</div><div class="section">
+    <div>− numero: int</div><div>− dificultad: int</div><div>− tiempoLimite: int</div>
+  </div><div class="section"><div>+ iniciar(): void</div><div>+ aumentarDificultad(): void</div>
+    <div>+ comprobarFinalizacion(): boolean</div>
+  </div></section>
+
+  <section class="class carril"><div class="name">Carril</div><div class="section">
+    <div>− indice: int</div><div>− tipo: TipoCarril</div><div>− direccion: Direccion</div>
+  </div><div class="section"><div>+ agregarObstaculo(o: Obstaculo): void</div>
+    <div>+ actualizar(): void</div>
+  </div></section>
+
+  <section class="class meta"><div class="name">Meta</div><div class="section">
+    <div>− identificador: int</div><div>− ocupada: boolean</div>
+  </div><div class="section"><div>+ ocupar(): void</div><div>+ liberar(): void</div>
+    <div>+ estaDisponible(): boolean</div>
+  </div></section>
+
+  <section class="class abstract entidad"><div class="name">«abstract» EntidadMovil</div><div class="section">
+    <div># posicionX: float</div><div># posicionY: float</div><div># velocidad: float</div><div># activo: boolean</div>
+  </div><div class="section"><div>+ mover(): void</div><div>+ actualizar(deltaTiempo: float): void</div>
+    <div>+ obtenerPosicion(): Punto</div>
+  </div></section>
+
+  <section class="class rana"><div class="name">Rana</div><div class="section">
+    <div>− vidas: int</div><div>− posicionInicial: Punto</div>
+  </div><div class="section"><div>+ saltar(direccion: Direccion): void</div><div>+ perderVida(): void</div>
+    <div>+ reiniciarPosicion(): void</div><div>+ llegoAMeta(): boolean</div>
+  </div></section>
+
+  <section class="class abstract obstaculo"><div class="name">«abstract» Obstaculo</div><div class="section">
+    <div># direccion: Direccion</div>
+  </div><div class="section"><div>+ colisionar(rana: Rana): void</div>
+    <div>+ salirDePantalla(): boolean</div>
+  </div></section>
+
+  <section class="class vehiculo"><div class="name">Vehiculo</div><div class="section">
+    <div>− tipo: TipoVehiculo</div><div>− danio: int</div>
+  </div><div class="section"><div>+ atropellar(rana: Rana): void</div></div></section>
+
+  <section class="class tronco"><div class="name">Tronco</div><div class="section">
+    <div>− longitud: float</div>
+  </div><div class="section"><div>+ transportar(rana: Rana): void</div>
+    <div>+ puedeSostener(rana: Rana): boolean</div>
+  </div></section>
+
+  <svg width="1800" height="1200" aria-label="Relaciones UML">
+    <!-- Composición Juego–Marcador -->
+    <path d="M230 371 L230 475"/><polygon points="230,371 220,385 230,399 240,385" fill="#334e68"/>
+    <text x="241" y="414">1</text><text x="241" y="463">1</text>
+    <!-- Composición Juego–Nivel -->
+    <path d="M400 225 L485 225"/><polygon points="400,225 414,215 428,225 414,235" fill="#334e68"/>
+    <text x="405" y="209">1</text><text x="449" y="209">1..*</text>
+    <!-- Composición Nivel–Carril -->
+    <path d="M657 324 L657 445"/><polygon points="657,324 647,338 657,352 667,338" fill="#334e68"/>
+    <text x="670" y="365">1</text><text x="670" y="429">1..*</text>
+    <!-- Composición Nivel–Meta -->
+    <path d="M815 324 L850 324 L850 755 L657 755 L657 795"/>
+    <polygon points="815,324 829,314 843,324 829,334" fill="#334e68"/>
+    <text x="838" y="308">1</text><text x="669" y="785">1..*</text>
+    <!-- Juego controla Rana -->
+    <path d="M400 300 L885 300 L885 550 L910 550"/>
+    <polygon points="400,300 414,290 428,300 414,310" fill="#334e68"/>
+    <text x="425" y="286">1</text><text x="876" y="536">1</text><text x="645" y="290">controla</text>
+    <!-- Herencia Rana–Entidad -->
+    <path d="M1092 465 L1092 399 L1125 399 L1125 349"/>
+    <polygon points="1125,349 1114,366 1136,366" fill="#fff" stroke="#334e68" stroke-width="2.2"/>
+    <!-- Herencia Obstáculo–Entidad -->
+    <path d="M1552 405 L1552 365 L1230 365 L1230 349"/>
+    <polygon points="1230,349 1219,366 1241,366" fill="#fff" stroke="#334e68" stroke-width="2.2"/>
+    <!-- Herencia Vehículo–Obstáculo -->
+    <path d="M1207 820 L1207 755 L1485 755 L1485 640"/>
+    <polygon points="1485,640 1474,657 1496,657" fill="#fff" stroke="#334e68" stroke-width="2.2"/>
+    <!-- Herencia Tronco–Obstáculo -->
+    <path d="M1580 820 L1580 690 L1605 690 L1605 640"/>
+    <polygon points="1605,640 1594,657 1616,657" fill="#fff" stroke="#334e68" stroke-width="2.2"/>
+    <!-- Agregación Carril–Obstáculo -->
+    <path d="M830 545 L870 545 L870 740 L1360 740 L1360 520 L1370 520"/>
+    <polygon points="830,545 844,535 858,545 844,555" fill="#fff" stroke="#334e68" stroke-width="2.2"/>
+    <text x="850" y="530">1</text><text x="1323" y="505">0..*</text><text x="1010" y="730">agrupa</text>
+    <!-- Dependencia Rana–Meta -->
+    <path class="dash" d="M910 655 L865 655 L865 910 L830 910"/>
+    <polygon points="830,910 844,903 840,910 844,917" fill="#334e68"/>
+    <text x="837" y="890">intenta alcanzar</text>
+    <!-- Asociación Rana–Tronco -->
+    <path d="M1275 580 L1320 580 L1320 790 L1580 790 L1580 820"/>
+    <text x="1285" y="566">0..1 se apoya en</text>
+  </svg>
+
+  <aside class="legend"><b>Visibilidad y relaciones</b><br>
+    + público &nbsp; − privado &nbsp; # protegido<br>
+    ◆ composición &nbsp; ◇ agregación &nbsp; △ herencia<br>
+    Línea discontinua: dependencia
+  </aside>
+  <div class="footer">Autor: Cristopher Alexander Bañares Suarez · Diseño de Software · Semana 4</div>
+</main>
+</body>
+</html>
